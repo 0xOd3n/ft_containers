@@ -2,15 +2,17 @@
 #ifndef VECTOR_HPP
 #define VECTOR_HPP
 
-#include "random_access_iterator.hpp"
-#include "reverse_itereator.hpp"
 #include <iostream>
 #include <algorithm>
 #include <cmath>
+#include "random_access_iterator.hpp"
+#include "reverse_itereator.hpp"
+#include "../enable_if.hpp"
+#include "../is_integral.hpp"
 
 namespace ft
 {
-    template <typename T,class Alloc = std::allocator<T>>
+    template <typename T,class Alloc = std::allocator<T> >
     class vector
     {
 
@@ -50,12 +52,10 @@ namespace ft
                     }
 
                     template <class InputIterator>
-                    vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type())
+                    vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(), typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type* = nullptr)
                     : ptr(0), m_size(0), m_capacity(0), _alloc(alloc)
                     {
                         difference_type nt = last - first;
-                        size_type n = (nt < 0) ? nt * -1 : nt;
-                        std::cout << "dist : " << n << std::endl;
                         this->reserve(nt);
                         m_size = nt;
                         for (int i = 0; i < nt; i++)
@@ -231,7 +231,7 @@ namespace ft
 
                     void    assign(size_type n, const value_type& val)
                     {
-                        if (n > capacity)
+                        if (n > m_capacity)
                             reserve(n);
                         for (size_type i = 0; i < n; i++)
                             _alloc.construct(&ptr[i], val);
@@ -260,6 +260,7 @@ namespace ft
 
                     iterator	erase(iterator position)
                     {
+                        std::cout << "entr erase\n";
                         size_type i = &*position - &*begin();
 
                         _alloc.destroy(&ptr[i]);
@@ -282,10 +283,9 @@ namespace ft
 
                     void	swap(vector &x)
                     {
-                        std::swap(ptr, x.ptr);
-                        std::swap(m_size, x.m_size);
-                        std::swap(m_capacity, x.m_capacity);
-                        std::swap(_alloc, x._alloc);
+                        vector<T> tmp = x; 
+                        x = *this;
+                        *this = tmp;
                     }
 
 
@@ -294,6 +294,11 @@ namespace ft
                         for (size_type i = 0; i < m_size; i++)
                             _alloc.destroy(&ptr[i]);
                         m_size = 0;
+                    }
+
+                    allocator_type get_allocator() const
+                    {
+                        return (_alloc);
                     }
 
                 private:
@@ -387,6 +392,12 @@ template <class T, class Alloc>
   {
       return (!(lhs < rhs));
   }
+
+template <class T, class Alloc>
+  void swap (vector<T,Alloc>& x, vector<T,Alloc>& y)
+  {
+      x.swap(y);
+  };
 };
 
 

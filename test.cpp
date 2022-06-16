@@ -37,12 +37,19 @@ int main()
     // ft::vector<std::string> v2(vector.begin(), vector.end());
     try 
     {
-        std::vector<std::string> vector(10, "abdo");
-        std::vector<std::string> vector2(vector.end(), vector. begin());
+        ft::vector<std::string> vector(10, "abdo");
+        ft::vector<std::string> vector2(vector.begin(), vector. begin());
     // vector.resize(5);
-    for (int i = 0; i < vector2.size(); i++)
-        std::cout << vector2[i] << std::endl;
+        for (int i = 0; i < vector2.size(); i++)
+            std::cout << vector2[i] << std::endl;
+            vector.push_back("amine");
+
+        // ft::  swap(vector2, vector);
+        ft::vector<std::string>::iterator it  =  vector.erase(vector.end() - 1);
+        std::cout << "after erase : " << *it << std::endl;
     // vector.assign()
+    std::cout << "get alloc : " << vector.get_allocator().max_size() << std::endl << vector.max_size() << std::endl;
+    std::cout << "after swap : " << vector[vector2.size() - 1] << std::endl;
     // ft::vector<int> vec(10, 1337);
 
     // std::cout << vector.max_size() << std::endl;
