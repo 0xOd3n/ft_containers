@@ -260,8 +260,7 @@ namespace ft
 
                     iterator	erase(iterator position)
                     {
-                        std::cout << "entr erase\n";
-                        size_type i = &*position - &*begin();
+                        difference_type i = position - begin();
 
                         _alloc.destroy(&ptr[i]);
                         _shift_left(i, 1);
@@ -353,13 +352,11 @@ namespace ft
             return true;
         }
 
-
  template <class T, class Alloc>
   bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
   {
       return (equal(lhs.begin(), lhs.end(), rhs.begin()) && rhs.size() == lhs.size());
   }
-	
 
 template <class T, class Alloc>
   bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
@@ -399,6 +396,5 @@ template <class T, class Alloc>
       x.swap(y);
   };
 };
-
 
 #endif

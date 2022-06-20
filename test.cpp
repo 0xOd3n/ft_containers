@@ -7,6 +7,7 @@
 #include "containers/vector/random_access_iterator.hpp"
 #include "containers/stack/stack.hpp"
 #include "containers/is_integral.hpp"
+#include "containers/map/AVL_Tree.hpp"
 
 int main()
 {
@@ -37,13 +38,14 @@ int main()
     // ft::vector<std::string> v2(vector.begin(), vector.end());
     try 
     {
-        ft::vector<std::string> vector(10, "abdo");
+        ft::vector<std::string> vector(10, "barca");
         ft::vector<std::string> vector2(vector.begin(), vector. begin());
     // vector.resize(5);
         for (int i = 0; i < vector2.size(); i++)
             std::cout << vector2[i] << std::endl;
             vector.push_back("amine");
-
+for(int i = 0; i < vector.size(); i++)
+        std::cout << "i : " << i << " " << vector[i] << std::endl;  
         // ft::  swap(vector2, vector);
         ft::vector<std::string>::iterator it  =  vector.erase(vector.end() - 1);
         std::cout << "after erase : " << *it << std::endl;
@@ -52,6 +54,11 @@ int main()
     std::cout << "after swap : " << vector[vector2.size() - 1] << std::endl;
     // ft::vector<int> vec(10, 1337);
 
+    for(int i = 0; i < vector.size(); i++)
+        std::cout << "i : " << i << " " << vector[i] << std::endl;
+
+    std::cout << "================================\n";
+    std::cout << "before erase\n";
     // std::cout << vector.max_size() << std::endl;
     // ft::vector<int>::reverse_iterator riter = vec.rend();
     // ft::vector<int>::iterator  ref = vec.begin();
@@ -59,6 +66,11 @@ int main()
     // // ref = 10;
     // std::cout << "riter : " << *riter << " ref : " << *ref << std::endl;
     // vector.assign(vector.max_size() + 11, 455);
+     ft::vector<std::string>::iterator iter = vector.erase(vector.end() - 1);
+    std::cout << "iter : " << *iter << std::endl;
+    for(int i = 0; i < vector.size(); i++)
+        std::cout << "i : " << i << " " << vector[i] << std::endl;
+    AvlTree<int, std::allocator<int> > avl;
     }
     catch(const std::exception& e)
     {
