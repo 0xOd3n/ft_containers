@@ -70,7 +70,7 @@ for(int i = 0; i < vector.size(); i++)
     std::cout << "iter : " << *iter << std::endl;
     for(int i = 0; i < vector.size(); i++)
         std::cout << "i : " << i << " " << vector[i] << std::endl;
-    AvlTree<int, std::allocator<int> > avl;
+    ft::AvlTree<int> avl(1337);
     }
     catch(const std::exception& e)
     {
