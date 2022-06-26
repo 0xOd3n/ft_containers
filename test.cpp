@@ -11,66 +11,17 @@
 
 int main()
 {
-
-    // vector.push_back("hahah");
-    // ft::stack<int> st;
-    // std::cout << st.size() << std::endl;
-    // st.push(10);
-    // st.push(10);
-    // st.push(10);
-    // st.push(11);
-    // st.push(12);
-    // st.push(13);
-    // st.push(14);
-
-    // std::cout << st.size() << std::endl;
-    // ft::stack<int> st2 = st;
-    // std::cout << "relational : "<< (st2 == st) << std::endl;
-
-    // while(!st2.empty())
-    // {
-    //     std::cout << st2.top() << std::endl;
-    //     st2.pop();
-    // }
-
-    // std::cout << is_integral<int>::value << std::endl;
-    // std::cout << is_integral<ft::vector<int>>::value;
-    // ft::vector<std::string> v2(vector.begin(), vector.end());
     try 
     {
-        ft::vector<std::string> vector(10, "barca");
-        ft::vector<std::string> vector2(vector.begin(), vector. begin());
-    // vector.resize(5);
-        for (int i = 0; i < vector2.size(); i++)
-            std::cout << vector2[i] << std::endl;
-            vector.push_back("amine");
-for(int i = 0; i < vector.size(); i++)
-        std::cout << "i : " << i << " " << vector[i] << std::endl;  
-        // ft::  swap(vector2, vector);
-        ft::vector<std::string>::iterator it  =  vector.erase(vector.end() - 1);
-        std::cout << "after erase : " << *it << std::endl;
-    // vector.assign()
-    std::cout << "get alloc : " << vector.get_allocator().max_size() << std::endl << vector.max_size() << std::endl;
-    std::cout << "after swap : " << vector[vector2.size() - 1] << std::endl;
-    // ft::vector<int> vec(10, 1337);
+        ft::AvlTree<int> avl(1337);
+        avl.contains(1337);
+        avl.insert(42);
+        avl.insert(420);
+        avl.insert(100);
+        avl.insert(101);
+        avl.insert(102);
+        avl.print();
 
-    for(int i = 0; i < vector.size(); i++)
-        std::cout << "i : " << i << " " << vector[i] << std::endl;
-
-    std::cout << "================================\n";
-    std::cout << "before erase\n";
-    // std::cout << vector.max_size() << std::endl;
-    // ft::vector<int>::reverse_iterator riter = vec.rend();
-    // ft::vector<int>::iterator  ref = vec.begin();
-    // std::cout << "riter : " << *riter << " ref : " << *ref << std::endl;
-    // // ref = 10;
-    // std::cout << "riter : " << *riter << " ref : " << *ref << std::endl;
-    // vector.assign(vector.max_size() + 11, 455);
-     ft::vector<std::string>::iterator iter = vector.erase(vector.end() - 1);
-    std::cout << "iter : " << *iter << std::endl;
-    for(int i = 0; i < vector.size(); i++)
-        std::cout << "i : " << i << " " << vector[i] << std::endl;
-    ft::AvlTree<int> avl(1337);
     }
     catch(const std::exception& e)
     {
