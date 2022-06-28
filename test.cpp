@@ -13,14 +13,23 @@ int main()
 {
     try 
     {
-        ft::AvlTree<int> avl(1337);
-        avl.contains(1337);
-        avl.insert(42);
-        avl.insert(420);
-        avl.insert(100);
-        avl.insert(101);
-        avl.insert(102);
+        ft::AvlTree<int> avl;
+        avl.insert(10);
+        avl.insert(9);
+        avl.insert(8);
+        avl.insert(17);
+        avl.insert(5);
+        avl.insert(4);
+        avl.insert(3);
+        avl.insert(2);
+        avl.insert(1);
         avl.print();
+        std::cout << "========== before remove =============\n";
+        std::cout << (avl.contains(10) ? "node found\n" : "node not found\n");
+        avl.remove(10);
+        avl.print();
+        std::cout << (avl.contains(10) ? "node found\n" : "node not found\n");
+
 
     }
     catch(const std::exception& e)
