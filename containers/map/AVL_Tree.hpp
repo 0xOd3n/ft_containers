@@ -6,7 +6,7 @@
 /*   By: abbelhac <abbelhac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 18:17:09 by abbelhac          #+#    #+#             */
-/*   Updated: 2022/06/27 00:51:16 by abbelhac         ###   ########.fr       */
+/*   Updated: 2022/06/28 20:59:18 by abbelhac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ namespace ft
 			Node    *parent;
 			int     bf;
 			int     height;
-			Node() : element(-42), left(nullptr), right(nullptr) {}
-			Node(const T& value) : element(value), left(nullptr), right(nullptr), bf(0), height(0) {}
+			Node() : element(0), left(nullptr), right(nullptr), parent(nullptr) {}
+			Node(const T& value) : element(value), left(nullptr), right(nullptr), parent(nullptr), bf(0), height(0) {}
 			Node(const T& value, int keep) : element(value) { keep = 0; }
 		};
 
@@ -64,11 +64,7 @@ namespace ft
 						}
 						~AvlTree()
 						{
-							if (root)
-							{
-								_alloc.deallocate(root, 1);
-								root = nullptr;
-							}
+							root = clear_all(root);
 						}
 
 						node_pointer    clear_all(node_pointer node)
@@ -105,7 +101,7 @@ namespace ft
 						
 						// check if a value is already exist
 
-						bool    contains(const value_type& value)
+						bool    contains(const value_type& value) const
 						{
 							return (contains(root, value));
 						}
@@ -114,7 +110,7 @@ namespace ft
 
 						bool	insert(const value_type& value)
 						{
-							if (!value || contains(root, value))
+							if (contains(root, value))
 								return (false);
 							root = insert(root, value);
 							tree_size++;
@@ -127,7 +123,7 @@ namespace ft
 
 						bool	remove(value_type value)
 						{
-							if (!value || !contains(root, value))
+							if (!contains(root, value))
 								return (false);
 							else
 							{
@@ -146,7 +142,7 @@ namespace ft
 						
 						// check if the value is already exist in the tree (recursive search)
 
-						bool    contains(node_pointer node, const value_type& value)
+						bool    contains(node_pointer node, const value_type& value)  const
 						{
 							if (node == nullptr)
 								return (false);
@@ -159,18 +155,19 @@ namespace ft
 						
 						// insert a new value inside the tree
 
-						node_pointer	insert(node_pointer& node, const value_type& value)
+						node_pointer	insert(node_pointer node, const value_type& value, node_pointer parent = nullptr)
 						{
 							if (node == nullptr)
 							{
 								node = _alloc.allocate(1);
 								_alloc.construct(node, value);
+								node->parent = parent;
 								return (node);
 							}
 							if (value < node->element)
-								node->left = insert(node->left, value);
+								node->left = insert(node->left, value, node);
 							else if (value > node->element)
-								node->right = insert(node->right, value);
+								node->right = insert(node->right, value, node);
 							update(node);
 							return (balance(node));
 						}
@@ -233,31 +230,41 @@ namespace ft
 
 						node_pointer	leftRotation(node_pointer node)
 						{
-							node_pointer newParent = node->right;
-							node->right = newParent->left;
-							newParent->left = node;
+							node_pointer node_parent = node->parent;
+							node_pointer newRoot = node->right;
+							node->right = newRoot->left;
+							if (node->right)
+								node->right->parent = node;
+							node->parent = newRoot;
+							newRoot->left = node;
+							newRoot->parent = node_parent;
 							update(node);
-							update(newParent);
-							return (newParent);
+							update(newRoot);
+							return (newRoot);
 						}
 
 						// Right Rotation
 
 						node_pointer	rightRotation(node_pointer node)
 						{
-							node_pointer newParent = node->left;
-							node->left = newParent->right;
-							newParent->right = node;
+							node_pointer node_parent = node->parent;
+							node_pointer newRoot = node->left;
+							node->left = newRoot->right;
+							if (node->left)
+								node->left->parent = node;
+							node->parent = newRoot;
+							newRoot->right = node;
+							newRoot->parent = node_parent;
 							update(node);
-							update(newParent);
-							return (newParent);
+							update(newRoot);
+							return (newRoot);
 						}
 
 						// remove method						
 
 						node_pointer	remove(node_pointer node, value_type value)
 						{
-							if (node == nullptr)
+							if (!node)
 								return (nullptr);
 							if (value < node->element)
 								node->left = remove(node->left, value);
@@ -265,9 +272,49 @@ namespace ft
 								node->right = remove(node->right, value);
 							else
 							{
-									// in process
+								if (!node->left || !node->right)
+								{
+									// std::cout << "enter if one side is null \n";
+									node_pointer tmp = (node->right) ? node->right : node->left;
+									if (tmp)
+										tmp->parent = node->parent;
+									_alloc.deallocate(node, 1);
+									node = tmp;
+								}
+								else if (node->left->height > node->right->height)
+								{
+									value_type Max_value = getMax(node->left);
+									_alloc.construct(node, Max_value, 1);
+									node->left = remove(node->left, Max_value);
+								}
+								else
+								{
+									value_type Min_value = getMin(node->right);
+									_alloc.construct(node, Min_value, 1);
+									node->right = remove(node->right, Min_value);
+								}
 							}
+							update(node);
+							return (balance(node));
 							
+						}
+						
+						// find max value method
+
+						value_type	getMax(node_pointer node)
+						{
+							while (node != nullptr)
+								node = node->right;
+							return node->element;
+						}
+
+						// find min value method
+
+						value_type	getMin(node_pointer node)
+						{
+							while (node != nullptr)
+								node = node->left;
+							return (node->element);
 						}
 						
 						// methods for printing the tree
@@ -288,7 +335,7 @@ namespace ft
 						void	levelOrder()
 						{
 							node_pointer node = root;
-							std::ofstream	outfile("outfile", std::ios_base::app);
+							std::ofstream	outfile("outfile");
 							std::queue<node_pointer > q;
 							node_pointer empty = _alloc.allocate(1);
 							_alloc.construct(empty);
@@ -347,10 +394,7 @@ namespace ft
 								repeat = (length) - (getLenght(current->element));
 								while (repeat--)
 									outfile << " ";
-								if (current->element == -42)
-									outfile << "X";
-								else
-									outfile << current->element;
+								outfile << current->element;
 								outfile << "|";
 								if (current->parent)
 									outfile << current->parent->element;
