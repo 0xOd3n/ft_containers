@@ -6,7 +6,7 @@
 /*   By: abbelhac <abbelhac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 23:04:44 by abbelhac          #+#    #+#             */
-/*   Updated: 2022/06/28 23:13:20 by abbelhac         ###   ########.fr       */
+/*   Updated: 2022/06/30 22:57:06 by abbelhac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,9 @@ namespace ft
         second_type     second;
         
         pair() : first(), second() { }
-        pair(const )
+        pair(const first_type& a, const second_type& b) : first(a), second(b) { }
+        template <class U1, class U2>
+        pair(const pair<U1, U2>& copy) : first(copy.first), second(copy.second) {}
     }
 }
 
