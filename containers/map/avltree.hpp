@@ -6,7 +6,7 @@
 /*   By: abbelhac <abbelhac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 18:17:09 by abbelhac          #+#    #+#             */
-/*   Updated: 2022/07/06 22:04:03 by abbelhac         ###   ########.fr       */
+/*   Updated: 2022/06/29 20:57:54 by abbelhac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,7 @@
 
 namespace ft
 {
-	// Node Data Structure :
-	template < class T >
+	template < typename T >
 		struct Node
 		{
 			T       element;
@@ -29,49 +28,38 @@ namespace ft
 			Node    *parent;
 			int     bf;
 			int     height;
-			Node() : left(nullptr), right(nullptr), parent(nullptr), bf(0), height(0){}
+			Node() : element(0), left(nullptr), right(nullptr), parent(nullptr) {}
 			Node(const T& value) : element(value), left(nullptr), right(nullptr), parent(nullptr), bf(0), height(0) {}
 			Node(const T& value, int keep) : element(value) { keep = 0; }
 		};
 
-	// Avl Balanced Tree :  
-
 	template <class Type> struct rebind {
 	typedef std::allocator<Type> other;
 	};
-	template < class T, class Compare, class Alloc = std::allocator<T> >
+	template < class T, class Alloc = std::allocator<T> >
 		class AvlTree
 		{
 			public	:
 			
 			typedef	T																		value_type;
-			typedef	Compare																	key_compare;
 			typedef	Node<T>*																node_pointer;
 			typedef	typename Alloc::template rebind<Node<value_type> >::other				allocator_type;
-			typedef	typename allocator_type::size_type										size_type;
 
 			
 			private	:
 						node_pointer			root;
-						node_pointer			_end;
 						allocator_type			_alloc;
-						size_type				tree_size;
-						key_compare				_cmp;
-						
+						int						tree_size;
 						int						length;
 						
 			public	:
 
-						AvlTree(const allocator_type& alloc = allocator_type(), const key_compare& cmp = key_compare()) : root(nullptr), tree_size(0),_cmp(cmp), length(0) {
-							_end = _alloc.allocate(1);
-						}
+						AvlTree() : root(nullptr), tree_size(0), length(0) {}
 						AvlTree(value_type value)
 						{
-							_end = _alloc.allocate(1);
 							root = _alloc.allocate(1);
 							_alloc.construct(root, value);
 							tree_size = 1;
-							_end->left = root;
 							length = getLenght(value);
 						}
 						~AvlTree()
@@ -124,10 +112,10 @@ namespace ft
 						{
 							if (contains(root, value))
 								return (false);
-							root = insert(root, value, _end);
+							root = insert(root, value);
 							tree_size++;
-							if (length < getLenght(value.first))
-								length = getLenght(value.first);
+							if (length < getLenght(value))
+								length = getLenght(value);
 							return (true);
 						}
 
@@ -158,12 +146,11 @@ namespace ft
 						{
 							if (node == nullptr)
 								return (false);
-							if (value.first == node->element.first)
-								return (true);
-							if (_cmp(value.first, node->element.first))
+							if (value < node->element)
 								return contains(node->left, value);
-							else
+							else if (value > node->element)
 								return (contains(node->right, value));
+							return (true);
 						}
 						
 						// insert a new value inside the tree
@@ -177,9 +164,9 @@ namespace ft
 								node->parent = parent;
 								return (node);
 							}
-							if (_cmp(value.first, node->element.first))
+							if (value < node->element)
 								node->left = insert(node->left, value, node);
-							else
+							else if (value > node->element)
 								node->right = insert(node->right, value, node);
 							update(node);
 							return (balance(node));
@@ -279,15 +266,20 @@ namespace ft
 						{
 							if (!node)
 								return (nullptr);
-							if (value.first == node->element.first)
+							if (value < node->element)
+								node->left = remove(node->left, value);
+							else if (value > node->element)
+								node->right = remove(node->right, value);
+							else
 							{
 								if (!node->left || !node->right)
 								{
+									// std::cout << "enter if one side is null \n";
 									node_pointer tmp = (node->right) ? node->right : node->left;
 									if (tmp)
 										tmp->parent = node->parent;
 									_alloc.deallocate(node, 1);
-									return (tmp);
+									node = tmp;
 								}
 								else if (node->left->height > node->right->height)
 								{
@@ -302,19 +294,16 @@ namespace ft
 									node->right = remove(node->right, Min_value);
 								}
 							}
-							else if (_cmp(value.first, node->element.first))
-								node->left = remove(node->left, value);
-							else
-								node->right = remove(node->right, value);
 							update(node);
 							return (balance(node));
+							
 						}
 						
 						// find max value method
 
 						value_type	getMax(node_pointer node)
 						{
-							while (node->right != nullptr)
+							while (node != nullptr)
 								node = node->right;
 							return node->element;
 						}
@@ -323,7 +312,7 @@ namespace ft
 
 						value_type	getMin(node_pointer node)
 						{
-							while (node->left != nullptr)
+							while (node != nullptr)
 								node = node->left;
 							return (node->element);
 						}
@@ -346,8 +335,7 @@ namespace ft
 						void	levelOrder()
 						{
 							node_pointer node = root;
-							std::ofstream	outfile("outfile",std::ios_base::app);
-							outfile << "\n\n\n\n";
+							std::ofstream	outfile("outfile");
 							std::queue<node_pointer > q;
 							node_pointer empty = _alloc.allocate(1);
 							_alloc.construct(empty);
@@ -403,13 +391,13 @@ namespace ft
 								while (spaces--)
 									outfile << " ";
 								outfile << "(";
-								repeat = (length) - (getLenght(current->element.first));
+								repeat = (length) - (getLenght(current->element));
 								while (repeat--)
 									outfile << " ";
-								outfile << current->element.first;
+								outfile << current->element;
 								outfile << "|";
 								if (current->parent)
-									outfile << current->parent->element.first;
+									outfile << current->parent->element;
 								else
 									outfile << "000";
 								outfile << ")";
