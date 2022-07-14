@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <cmath>
 #include "random_access_iterator.hpp"
-#include "reverse_itereator.hpp"
+#include "../reverse_iterator.hpp"
 #include "../enable_if.hpp"
 #include "../is_integral.hpp"
 
