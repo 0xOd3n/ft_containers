@@ -6,14 +6,14 @@
 /*   By: abbelhac <abbelhac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 18:17:09 by abbelhac          #+#    #+#             */
-/*   Updated: 2022/07/06 22:04:03 by abbelhac         ###   ########.fr       */
+/*   Updated: 2022/07/14 22:14:59 by abbelhac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef AVL_TREE_HPP
 # define AVL_TREE_HPP
 
-# include <iostream>
+#include <iostream>
 #include <queue>
 #include <fstream>
 
@@ -101,12 +101,22 @@ namespace ft
 
 						// get the tree size
 						
-						int     size()
+						int		size()
 						{
 							return (tree_size);
 						}
 
-						bool    is_empty()
+						size_type max_size() const 
+						{
+							return _alloc.max_size();
+						}
+
+						allocator_type get_allocator() const 
+						{
+							return (this->_alloc);
+						}
+
+						bool	is_empty()
 						{
 							return (size() == 0);
 						}
@@ -143,6 +153,28 @@ namespace ft
 								tree_size--;
 								return (true);
 							}
+						}
+
+						nodePtr	getEnd() const
+						{
+							return (this->_end);
+						}
+
+						node_pointer	getMin(node_pointer node = nullptr) const
+						{
+							if (!node)
+								node = _root;
+							while (node && node->left)
+								node = node->left;
+							return node;
+						}
+						node_pointer	getMax(node_pointer node = nullptr)
+						{
+							if (!node)
+								node = _root;
+							while (node && node->right)
+								node = node->right;
+							return node;
 						}
 
 						void	print()
@@ -291,13 +323,13 @@ namespace ft
 								}
 								else if (node->left->height > node->right->height)
 								{
-									value_type Max_value = getMax(node->left);
+									value_type Max_value = findMax(node->left);
 									_alloc.construct(node, Max_value, 1);
 									node->left = remove(node->left, Max_value);
 								}
 								else
 								{
-									value_type Min_value = getMin(node->right);
+									value_type Min_value = findMin(node->right);
 									_alloc.construct(node, Min_value, 1);
 									node->right = remove(node->right, Min_value);
 								}
@@ -312,7 +344,7 @@ namespace ft
 						
 						// find max value method
 
-						value_type	getMax(node_pointer node)
+						value_type	findMax(node_pointer node)
 						{
 							while (node->right != nullptr)
 								node = node->right;
@@ -321,7 +353,7 @@ namespace ft
 
 						// find min value method
 
-						value_type	getMin(node_pointer node)
+						value_type	findMin(node_pointer node)
 						{
 							while (node->left != nullptr)
 								node = node->left;
