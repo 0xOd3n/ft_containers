@@ -6,7 +6,7 @@
 /*   By: abbelhac <abbelhac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/02 19:20:22 by abbelhac          #+#    #+#             */
-/*   Updated: 2022/07/14 22:20:05 by abbelhac         ###   ########.fr       */
+/*   Updated: 2022/07/16 00:08:05 by abbelhac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ namespace ft
 					typedef	ft::mapiterator<pointer, nodePtr>					iterator;
 					typedef	ft::mapiterator<const_pointer, nodePtr>				const_iterator;
 					typedef	ft::reverse_iterator<iterator>						reverse_iterator;
+					typedef	ft::reverse_iterator<const_iterator>				const_reverse_iterator;
 
 
 
@@ -87,7 +88,7 @@ namespace ft
 					{
 						while (first != last)
 						{
-							_tree.insert(*first)
+							_tree.insert(*first);
 							first++;
 						}
 					}
@@ -103,7 +104,7 @@ namespace ft
 							return *this;
 						_tree.clear();
 						if (x.size())
-							insert(x.begin(), X.end());
+							insert(x.begin(), x.end());
 						_alloc = x._alloc;
 						_cmp = x._cmp;
 						return *this;
@@ -111,7 +112,7 @@ namespace ft
 
 					~map() {}
 					
-				// SECTION - Itertaors
+				// SECTION - Iterator
 
 				iterator	begin()
 				{
@@ -162,6 +163,18 @@ namespace ft
 
 				// Element access
 				
+				mapped_type&	operator[] (const key_type& k)
+				{
+					value_type element = ft::make_pair(k, mapped_type());
+					nodePtr node = _tree.find(element);
+					if (!node || node == _tree.getEnd())
+					{
+						_tree.insert(element);
+						node = _tree.find(element);
+					}
+					return (node->element.second);
+				}
+
 				
 
 				// Modifiers
