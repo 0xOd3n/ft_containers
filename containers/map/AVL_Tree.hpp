@@ -6,7 +6,7 @@
 /*   By: abbelhac <abbelhac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 18:17:09 by abbelhac          #+#    #+#             */
-/*   Updated: 2022/07/14 22:14:59 by abbelhac         ###   ########.fr       */
+/*   Updated: 2022/07/15 23:32:44 by abbelhac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ namespace ft
 
 			
 			private	:
-						node_pointer			root;
+						node_pointer			_root;
 						node_pointer			_end;
 						allocator_type			_alloc;
 						size_type				tree_size;
@@ -62,21 +62,21 @@ namespace ft
 						
 			public	:
 
-						AvlTree(const allocator_type& alloc = allocator_type(), const key_compare& cmp = key_compare()) : root(nullptr), tree_size(0),_cmp(cmp), length(0) {
+						AvlTree(const allocator_type& alloc = allocator_type(), const key_compare& cmp = key_compare()) : _root(nullptr), tree_size(0),_cmp(cmp), length(0) {
 							_end = _alloc.allocate(1);
 						}
 						AvlTree(value_type value)
 						{
 							_end = _alloc.allocate(1);
-							root = _alloc.allocate(1);
-							_alloc.construct(root, value);
+							_root = _alloc.allocate(1);
+							_alloc.construct(_root, value);
 							tree_size = 1;
-							_end->left = root;
+							_end->left = _root;
 							length = getLenght(value);
 						}
 						~AvlTree()
 						{
-							root = clear_all(root);
+							_root = clear_all(_root);
 						}
 
 						node_pointer    clear_all(node_pointer node)
@@ -94,9 +94,9 @@ namespace ft
 						
 						int     height()
 						{
-							if (root == nullptr)
+							if (_root == nullptr)
 								return (0);
-							return root->height;
+							return _root->height;
 						}
 
 						// get the tree size
@@ -125,16 +125,21 @@ namespace ft
 
 						bool    contains(const value_type& value) const
 						{
-							return (contains(root, value));
+							return (contains(_root, value));
+						}
+
+						node_pointer	find(const value_type& value)
+						{
+							return find(value, _root);
 						}
 
 						// insert a new value inside the tree
 
 						bool	insert(const value_type& value)
 						{
-							if (contains(root, value))
+							if (contains(_root, value))
 								return (false);
-							root = insert(root, value, _end);
+							_root = insert(_root, value, _end);
 							tree_size++;
 							if (length < getLenght(value.first))
 								length = getLenght(value.first);
@@ -145,17 +150,17 @@ namespace ft
 
 						bool	remove(value_type value)
 						{
-							if (!contains(root, value))
+							if (!contains(_root, value))
 								return (false);
 							else
 							{
-								root = remove(root, value);
+								_root = remove(_root, value);
 								tree_size--;
 								return (true);
 							}
 						}
 
-						nodePtr	getEnd() const
+						node_pointer	getEnd() const
 						{
 							return (this->_end);
 						}
@@ -196,6 +201,17 @@ namespace ft
 								return contains(node->left, value);
 							else
 								return (contains(node->right, value));
+						}
+
+						node_pointer	find(const value_type& value, node_pointer& node)
+						{
+							if (!node || node == _end)
+								return (_end);
+							if (value.first == node->element.first)
+								return (node);
+							if (_cmp(value.first, node->element.first))
+								return (find(value, node->left));
+							return (find(value, node->right));
 						}
 						
 						// insert a new value inside the tree
@@ -377,7 +393,7 @@ namespace ft
 						}
 						void	levelOrder()
 						{
-							node_pointer node = root;
+							node_pointer node = _root;
 							std::ofstream	outfile("outfile",std::ios_base::app);
 							outfile << "\n\n\n\n";
 							std::queue<node_pointer > q;
@@ -388,11 +404,11 @@ namespace ft
 							int	level = 0;
 							int	childs = 0;
 							int	repeat;
-							int	height = root->height;
+							int	height = _root->height;
 							int len = (length * 2) + 3;
 							// length += 2;
 							
-							q.push(root);
+							q.push(_root);
 							while (height >= 0)
 							{
 								node_pointer current = q.front();
