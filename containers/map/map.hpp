@@ -6,7 +6,7 @@
 /*   By: abbelhac <abbelhac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/02 19:20:22 by abbelhac          #+#    #+#             */
-/*   Updated: 2022/07/16 00:08:05 by abbelhac         ###   ########.fr       */
+/*   Updated: 2022/07/16 22:35:33 by abbelhac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,11 +175,80 @@ namespace ft
 					return (node->element.second);
 				}
 
-				
-
 				// Modifiers
 				
 				void clear() {_tree.clear_all();}
+
+				// insert
+
+				pair<iterator, bool> insert (const value_type& val)
+				{
+					nodePtr	node = _tree.find(val);
+					bool	notInserted = false;
+					if (!node || node == _tree.getEnd())
+					{
+						_tree.insert(val);
+						node = _tree.find(val);
+						notInserted = true;
+					}
+					return (ft::make_pair(iterator(node), notInserted));
+				}
+
+				iterator insert (iterator position, const value_type& val)
+				{
+					static_cast<void>(position);
+					nodePtr	node = _tree.find(val);
+					if (!node || node == _tree.getEnd())
+					{
+						_tree.insert(val);
+						node = _tree.find(val);
+					}
+					return (iterator(node));
+				}
+
+				template <class InputIterator>
+				void	insert(InputIterator first, InputIterator last)
+				{
+					while (first != last)
+					{
+						_tree.insert(*first);
+						first++;
+					}
+				}
+
+				// erase
+				
+				void	erase(iterator position)
+				{
+					nodePtr node = position.base();
+					if (node)
+						_tree.erase(*position);
+				}
+
+				size_type	erase(const key_type& k)
+				{
+					nodePtr node = _tree.find(ft::make_pair(k, mapped_type()));
+					if (!node || node == _tree.getEnd())
+					return (0);
+					_tree.erase(node->data);
+					return (1);
+				}
+
+				void	erase(iterator first, iterator last)
+				{
+					iterator tmp;
+					while (first != last)
+					{
+						tmp = first++;
+						erase(tmp);
+						if (first == iterator(_tree.get_allocator()))
+							return;
+					}
+				}
+
+				
+
+				
 				
 				// Allocator
 				
