@@ -6,7 +6,7 @@
 /*   By: abbelhac <abbelhac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 18:17:09 by abbelhac          #+#    #+#             */
-/*   Updated: 2022/07/15 23:32:44 by abbelhac         ###   ########.fr       */
+/*   Updated: 2022/07/19 18:53:00 by abbelhac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,6 +182,52 @@ namespace ft
 							return node;
 						}
 
+						// swap
+
+						void	swap(AVLTree& x)
+						{
+							node_pointer			root = _root;
+							node_pointer			end = _end;
+							allocator_type	alloc = _alloc;
+							key_compare		cmp = _cmp;
+							size_type		size = tree_size;
+
+							_root = x._root;
+							_end = x._end;
+							_alloc = x._alloc;
+							_cmp = x._cmp;
+							tree_size = x.tree_size;
+
+							x._root = root;
+							x._end = end;
+							x._alloc = alloc;
+							x._cmp = cmp;
+							x.tree_size = size;
+						}
+
+						node_pointer	lowerBound(const value_type& value)
+						{
+							node_pointer node = getMin();
+							while (node != _end)
+							{
+								if (!_cmp(node->element.first, value.first))
+									return (node);
+								node = successor(node);
+							}
+							return (_end);
+						}
+						node_pointer	upperBound(const value_type& value)
+						{
+							node_pointer node = getMin();
+							while (node != _end)
+							{
+								if (_cmp(value.first, node->element.first))
+									return (node);
+								node = successor(node);
+							}
+							return (_end);
+						}
+
 						void	print()
 						{
 							levelOrder();
@@ -212,6 +258,28 @@ namespace ft
 							if (_cmp(value.first, node->element.first))
 								return (find(value, node->left));
 							return (find(value, node->right));
+						}
+
+						node_pointer	successor(node_pointer node)
+						{
+							node_pointer	parent = node->parent;
+							node_pointer	tmp = node;
+							if (tmp->right)
+							{
+								tmp = tmp->right;
+								while (tmp->left)
+									tmp = tmp->left;
+								return tmp;
+							}
+							else
+							{
+								while (parent && tmp == parent->right)
+								{
+									tmp = parent;
+									parent = tmp->parent;
+								}
+								return (parent);
+							}
 						}
 						
 						// insert a new value inside the tree
