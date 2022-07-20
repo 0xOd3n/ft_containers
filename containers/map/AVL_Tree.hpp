@@ -6,7 +6,7 @@
 /*   By: abbelhac <abbelhac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 18:17:09 by abbelhac          #+#    #+#             */
-/*   Updated: 2022/07/19 18:53:00 by abbelhac         ###   ########.fr       */
+/*   Updated: 2022/07/20 15:19:12 by abbelhac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ namespace ft
 						
 			public	:
 
-						AvlTree(const allocator_type& alloc = allocator_type(), const key_compare& cmp = key_compare()) : _root(nullptr), tree_size(0),_cmp(cmp), length(0) {
+						AvlTree(const allocator_type& alloc = allocator_type(), const key_compare& cmp = key_compare()) : _root(nullptr), _alloc(alloc), tree_size(0),_cmp(cmp), length(0) {
 							_end = _alloc.allocate(1);
 						}
 						AvlTree(value_type value)
@@ -77,18 +77,15 @@ namespace ft
 						~AvlTree()
 						{
 							_root = clear_all(_root);
+							tree_size = 0;
 						}
 
-						node_pointer    clear_all(node_pointer node)
+						void	clear()
 						{
-							if (node != nullptr)
-							{
-								clear_all(node->left);
-								clear_all(node->right);
-								_alloc.deallocate(node, 1);
-							}
-							return nullptr;
+							_root = clear_all(_root);
+							tree_size = 0;
 						}
+
 						
 						// get the root's height
 						
@@ -101,7 +98,7 @@ namespace ft
 
 						// get the tree size
 						
-						int		size()
+						int		size() const
 						{
 							return (tree_size);
 						}
@@ -116,7 +113,7 @@ namespace ft
 							return (this->_alloc);
 						}
 
-						bool	is_empty()
+						bool	is_empty() const
 						{
 							return (size() == 0);
 						}
@@ -148,13 +145,13 @@ namespace ft
 
 						// Remove a value from the tree
 
-						bool	remove(value_type value)
+						bool	erase(value_type value)
 						{
 							if (!contains(_root, value))
 								return (false);
 							else
 							{
-								_root = remove(_root, value);
+								_root = erase(_root, value);
 								tree_size--;
 								return (true);
 							}
@@ -184,7 +181,7 @@ namespace ft
 
 						// swap
 
-						void	swap(AVLTree& x)
+						void	swap(AvlTree& x)
 						{
 							node_pointer			root = _root;
 							node_pointer			end = _end;
@@ -235,6 +232,17 @@ namespace ft
 				
 			private :
 						
+						node_pointer    clear_all(node_pointer node)
+						{
+							if (node != nullptr)
+							{
+								clear_all(node->left);
+								clear_all(node->right);
+								_alloc.deallocate(node, 1);
+							}
+							return nullptr;
+						}
+
 						// check if the value is already exist in the tree (recursive search)
 
 						bool    contains(node_pointer node, const value_type& value)  const
@@ -391,7 +399,7 @@ namespace ft
 
 						// remove method						
 
-						node_pointer	remove(node_pointer node, value_type value)
+						node_pointer	erase(node_pointer node, value_type value)
 						{
 							if (!node)
 								return (nullptr);
@@ -409,19 +417,19 @@ namespace ft
 								{
 									value_type Max_value = findMax(node->left);
 									_alloc.construct(node, Max_value, 1);
-									node->left = remove(node->left, Max_value);
+									node->left = erase(node->left, Max_value);
 								}
 								else
 								{
 									value_type Min_value = findMin(node->right);
 									_alloc.construct(node, Min_value, 1);
-									node->right = remove(node->right, Min_value);
+									node->right = erase(node->right, Min_value);
 								}
 							}
 							else if (_cmp(value.first, node->element.first))
-								node->left = remove(node->left, value);
+								node->left = erase(node->left, value);
 							else
-								node->right = remove(node->right, value);
+								node->right = erase(node->right, value);
 							update(node);
 							return (balance(node));
 						}
