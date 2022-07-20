@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   AVL_Tree.hpp                                       :+:      :+:    :+:   */
+/*   avltree.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abbelhac <abbelhac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/20 18:17:09 by abbelhac          #+#    #+#             */
-/*   Updated: 2022/06/29 20:57:54 by abbelhac         ###   ########.fr       */
+/*   Updated: 2022/07/14 21:34:52 by abbelhac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef AVL_TREE_HPP
-# define AVL_TREE_HPP
+#ifndef AVLTREE_HPP
+# define AVLTREE_HPP
 
 # include <iostream>
 #include <queue>
