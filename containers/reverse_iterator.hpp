@@ -16,6 +16,11 @@ namespace ft
 				typedef typename iterator_traits<Iterator>::reference			reference;
 				typedef typename iterator_traits<Iterator>::iterator_category	iterator_category;
 
+			private:
+				iterator_type	_ptr;
+
+			public:
+
 				reverse_iterator() : _ptr(Iterator()) {};
 				explicit reverse_iterator(iterator_type it) : _ptr(it) {};
 				reverse_iterator(const reverse_iterator<Iterator>& rev_it) : _ptr(rev_it._ptr) {};
@@ -30,44 +35,39 @@ namespace ft
 				iterator_type	base() const
 				{return (_ptr);}
 
-			private:
-				Iterator	_ptr;
-
-			public:
-
 				// increment/decrement
 				reverse_iterator	&operator++()
 				{
-					--(*this);
+					--_ptr;
 					return (*this);
 				}
 				reverse_iterator	operator++(int)
 				{
 					reverse_iterator	tmp = *this;
-					--(*this);
+					--_ptr;
 					return (tmp);
 				}
 				reverse_iterator	&operator--()
 				{
-					++(*this);
+					++_ptr;
 					return (*this);
 				}
 				reverse_iterator	operator--(int)
 				{
 					reverse_iterator	tmp = *this;
-					++(*this);
+					++_ptr;
 					return (tmp);
 				}
 
 				// assignement
 				reverse_iterator	&operator+=(difference_type n)
 				{
-					*(this) -= n;
+					_ptr -= n;
 					return (*this);
 				}
 				reverse_iterator	&operator-=(difference_type n)
 				{
-					*(this) += n;
+					_ptr += n;
 					return (*this);
 				}
 
@@ -90,12 +90,12 @@ namespace ft
 				{
 					return (*(_ptr - n - 1));
 				}
+
 				reference operator*() const
 				{
-					Iterator	tmp = _ptr;
-
-					return (*(_ptr - 1));
+					return *(--base());
 				}
+
 				pointer operator->() const
 				{
 					return &(operator*());
