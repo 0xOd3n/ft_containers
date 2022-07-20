@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   map_iterator.cpp                                   :+:      :+:    :+:   */
+/*   map_iterator.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abbelhac <abbelhac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 21:14:53 by abbelhac          #+#    #+#             */
-/*   Updated: 2022/07/14 21:26:46 by abbelhac         ###   ########.fr       */
+/*   Updated: 2022/07/20 02:17:35 by abbelhac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,10 @@ namespace ft
 			mapiterator() : node(nullptr) {}
 			explicit mapiterator(nodePtr ptr) : node(ptr) {}
 			template <class Iter, class nodeptr>
-			mapiterator (const mapiterator<Iter, nodeptr>& it) : node(it.node) {}
+			mapiterator (const mapiterator<Iter, nodePtr>& it) : node(it.node) {}
 			nodePtr base() const{return node;}
-			reference operator*() const{return node->data;}
-			pointer operator->() const {return (&(node->data));}
+			reference operator*() const{return node->element;}
+			pointer operator->() const {return (&(node->element));}
 			mapiterator& operator++()
 			{
 				node = successor();
