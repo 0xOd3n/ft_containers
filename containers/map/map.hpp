@@ -6,7 +6,7 @@
 /*   By: abbelhac <abbelhac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/02 19:20:22 by abbelhac          #+#    #+#             */
-/*   Updated: 2022/07/19 20:04:36 by abbelhac         ###   ########.fr       */
+/*   Updated: 2022/07/20 02:29:10 by abbelhac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ namespace ft
 
 					typedef	Key                                                	key_type;
 					typedef	T                                                  	mapped_type;
-					typedef	std::pair<const key_type, mapped_type>             	value_type;
+					typedef	ft::pair<const key_type, mapped_type>             	value_type;
 					typedef	Compare                                            	key_compare;
 					typedef	Alloc                                              	allocator_type;
 					typedef typename allocator_type::reference					reference;
@@ -177,7 +177,7 @@ namespace ft
 
 				// Modifiers
 				
-				void clear() {_tree.clear_all();}
+				void clear() {_tree.clear();}
 
 				pair<iterator, bool> insert (const value_type& val)
 				{
@@ -226,7 +226,7 @@ namespace ft
 					nodePtr node = _tree.find(ft::make_pair(k, mapped_type()));
 					if (!node || node == _tree.getEnd())
 					return (0);
-					_tree.erase(node->data);
+					_tree.erase(node->element);
 					return (1);
 				}
 
@@ -237,7 +237,7 @@ namespace ft
 					{
 						tmp = first++;
 						erase(tmp);
-						if (first == iterator(_tree.get_allocator()))
+						if (first == iterator(_tree.getEnd()))
 							return;
 					}
 				}
@@ -250,14 +250,14 @@ namespace ft
 					this->_cmp = other._cmp;
 					other._alloc = alloc;
 					other._cmp = cmp;
-					tree.swap(other._tree);
+					_tree.swap(other._tree);
 				}
 
 				// Lookup
 
 				size_type	count(const key_type& k) const
 				{
-					nodePtr node = tree.find(ft::make(k, mapped_type()));
+					nodePtr node = _tree.find(ft::make_pair(k, mapped_type()));
 					if (!node || node == _tree.getEnd())
 						return (0);
 					return (1);
@@ -297,7 +297,7 @@ namespace ft
 					if (iter.base() != _tree.getEnd())
 						++iter;
 					else
-						iter = itererator(_tree.upperBound(ft::make_pair(k, mapped_type())));
+						iter = iterator(_tree.upperBound(ft::make_pair(k, mapped_type())));
 					return (iter);
 				}
 				const_iterator upper_bound (const key_type& k) const
@@ -315,7 +315,7 @@ namespace ft
 					return (ft::make_pair<iterator, iterator>(lower_bound(k), upper_bound(k)));
 				}
 				
-				pair<const_iterator, const_iterator> equal_range(const key_type& k)
+				pair<const_iterator, const_iterator> equal_range(const key_type& k) const
 				{
 					return (ft::make_pair<const_iterator, const_iterator>(lower_bound(k), upper_bound(k)));
 				}
